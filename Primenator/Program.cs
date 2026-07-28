@@ -3,31 +3,32 @@ using System.Runtime.CompilerServices;
 
 class Primeinator
 {
-    void Main()
+    static void Main()
     {
         //Grabs our program directory and initializes the string to the location of our PrimesList and 
         string primesPath = Directory.GetCurrentDirectory() + "\\PrimeList.txt";
         string rawPrimes = File.ReadAllText(primesPath);
-
         Console.WriteLine("How many numbers would you like to evaluate?");
-        string primeSplits = Promptuser();
-        if (primeSplits == "")
-        {
-            Promptuser();
-        }
-        else
-        {
 
+        string primeSplits = Promptuser();
+
+        while (primeSplits == "")
+        {
+            primeSplits = Promptuser();
         }
+
+        Console.WriteLine("thank you!");
+        
     }
 
-    private string Promptuser()
+    static private string Promptuser()
     {
         string? userInput = Console.ReadLine();
 
-        if (userInput == "")
+        if (userInput is null)
         {
             Console.WriteLine("You must enter a value");
+            userInput = "";
             return userInput;
         }
         else if (NumberCheck(userInput))
@@ -42,7 +43,7 @@ class Primeinator
         }
            
     }
-    private bool NumberCheck(string userInput)
+    static private bool NumberCheck(string userInput)
     {
         foreach(char c in userInput)
         {
