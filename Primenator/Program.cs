@@ -1,16 +1,17 @@
 ﻿
 using System.Collections;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 class Primeinator
-{ 
+{
     static void Main()
     {
+        var runningTime = Stopwatch.StartNew();
+
         //Grabs our program directory and initializes the string to the location of our PrimesList then reads that file into rawPrimes
         string primesPath = Directory.GetCurrentDirectory() + "\\PrimeList.txt";
         string rawPrimes = File.ReadAllText(primesPath);
-
-        Console.WriteLine("test");
 
         List<int> parsedPrimes = NumberParse(rawPrimes);
 
@@ -21,20 +22,50 @@ class Primeinator
         do
         {
             primeSplitsInput = PromptUser();
+
         }
         while (primeSplitsInput == "");
 
-        int primeDivisons = Convert.ToInt16(primeSplitsInput);
+        int primeDivisions = Convert.ToInt32(primeSplitsInput);
 
-        for (int i = 0; i < parsedPrimes.Count; i++)
+        //initialise our array to the size and depth relative to what the user wants
+        // i.e. 4 inputs, devide the length of  our list by 4 and create array of that depth with 4 
+        // slots. I feel issues might arise with uneven devisors (i.e. if we return
+        // a value that would be a decimal; to investigate.
+
+        int[,] sortedPrimes = new int[parsedPrimes.Count/primeDivisions,primeDivisions];
+        int[] userInputValues = new int[primeDivisions];
+
+        int iterationCount = 0;
+        int currentIndex = 0;
+
+        while (iterationCount < sortedPrimes.GetUpperBound(0))
         {
-            Console.WriteLine(parsedPrimes[i]);
+          
+            for (int i = 0; i < primeDivisions; i++)
+            {
+                //i suspect this is a funky way to achieve this.
+                
+                sortedPrimes[currentIndex, i] = parsedPrimes[iterationCount];
+                iterationCount++;
+            }
+            currentIndex++;
         }
         
+        while (userInputValues.Length < primeDivisions)
+        {
+            for (int i = 0; i < primeDivisions; i++)
+            {
+
+            }
+        }
+
+       
 
     }
 
-    //logic to convert our CSV primes to a simple, ordered list of primes
+    //logic to convert our CSV primes to a simple list maintaining their order. Could be used on any CSV input of numbers
+    // but will not play well with headers or text input.
     static private List<int> NumberParse(string rawPrimes)
     {
         Queue<char> intermediatePrime = new Queue<char>();
@@ -86,6 +117,13 @@ class Primeinator
             userInput = "";
             return userInput;
         }
+        else if (userInput == "0")
+        {
+            Console.WriteLine("Input cannot be Zero");
+            userInput = "";
+            return userInput;
+        }
+
         else
         {
             return userInput;
@@ -94,6 +132,7 @@ class Primeinator
     }
     static private bool NumberCheck(string userInput)
     {
+        //simple check for any non-numeric characters in userInput
         foreach(char c in userInput)
         {
             if (char.IsNumber(c))
